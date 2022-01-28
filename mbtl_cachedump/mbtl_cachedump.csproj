@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="PropertyHook">
+      <HintPath>..\..\..\..\Documents\phook\PropertyHook-master\PropertyHook\bin\Debug\PropertyHook.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
