@@ -15,12 +15,15 @@ namespace mbtl_cachedump
             public PHPointer StringCodeAddr;
             public PHPointer OffsetCodeAddr;
             public PHPointer SizeCodeAddr;
-            public PHPointer StringPointer = null;
+            public PHPointer StringPointer = null;  
 
             public SampleHook() : base(5000, 5000, p => p.ProcessName == "MBTL")
             {
                 StringCodeAddr = RegisterAbsoluteAOB("8D 8D F0 FD FF FF 83 C4 10 33 F6 8D 51 01 66 90 8A 01",-26);
-                OffsetCodeAddr = RegisterAbsoluteAOB("8D 95 F8 FE FF FF 8D 4A 01 0F 1F 80 00 00 00 00 8A 02 42 84 C0 75 F9 8B BD E8 F9 FF FF 2B D1",34);
+                //OffsetCodeAddr = RegisterAbsoluteAOB("53 56 57 8B 7D 08 8B D9 8B 4D 0C 47", 0xd);
+                OffsetCodeAddr = RegisterAbsoluteAOB("74 05 83 FA FF 75 05 BB 01 00 00 00 C6 06 00 85 DB 75 6C",22); //fuck it
+                
+
                 SizeCodeAddr = RegisterAbsoluteAOB("75 2D 38 46 65 74 17 38 46 6C 75 12 8B 46 68",18);
             }
         }
@@ -56,17 +59,20 @@ namespace mbtl_cachedump
                 }
 
                 string path_string = MBTLHook.StringPointer.ReadString(0, System.Text.Encoding.UTF8, (uint)chr_offset, false);
-                path_list.Add(path_string);
+                if( path_string.Length > 0 ) path_list.Add(path_string);
 
                 str_index += 4;
                 num_str++;
                 chr_offset = 0;
             }
 
+
+            Console.WriteLine("its "+MBTLHook.OffsetCodeAddr.Resolve());
+
             //process offset and size tables
             for(int i = 0; i < num_str; i++)
             {
-                byte[] offset_byte = MBTLHook.OffsetCodeAddr.ReadBytes((i * 4)+0x80, 4);
+                byte[] offset_byte = MBTLHook.OffsetCodeAddr.ReadBytes((i * 4)+0x40, 4);
                 byte[] size_byte = MBTLHook.SizeCodeAddr.ReadBytes(i * 4, 4);
 
                 offset_list.Add(offset_byte);
